@@ -1,18 +1,18 @@
 import 'package:ecommerce_app/Controllers/Providers/providers.dart';
-import 'package:ecommerce_app/Data/Local/Models/user_local_model.dart';
 import 'package:ecommerce_app/Products/Screens/product_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import '../../Data/Local/Models/User/user_local_model.dart';
 
 class AuthScreen extends ConsumerWidget {
   const AuthScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _googleSignIn = ref.read(googleProvider);
-    final _localdb = ref.read(isarProvider);
+    final googleSignIn = ref.read(googleProvider);
+    final localdb = ref.read(isarProvider);
 
     return Scaffold(
         body: SizedBox.expand(
@@ -26,16 +26,16 @@ class AuthScreen extends ConsumerWidget {
               onPressed: () async {
                 //   googleLogin() async {
                 try {
-                  GoogleSignInAccount? result = await _googleSignIn
+                  GoogleSignInAccount? result = await googleSignIn
                       .signIn()
                       .then((value) => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ProductScreen())));
+                              builder: (context) => const ProductScreen())));
                   // print('RESULT: ${result?.email}');
 
-                  _localdb.openDb();
-                  _localdb.saveUser(UserLocalModel.fromObject(result!));
+                  localdb.openDb();
+                  localdb.saveUser(UserLocalModel.fromObject(result!));
 
                   // var databasePath =
                   //     (await getApplicationDocumentsDirectory()).path;
@@ -73,7 +73,6 @@ class AuthScreen extends ConsumerWidget {
                   // print('RESPONSE: ${response}');
                   //print(serverToken.accessToken);
                 } catch (e) {
-                  print(e);
                   //    }
                 }
               },
@@ -83,12 +82,9 @@ class AuthScreen extends ConsumerWidget {
               onPressed: () async {
                 //   googleLogin() async {
                 try {
-                  print("googleLogin method Called");
-                  final _googleSignIn = GoogleSignIn();
-                  var result = await _googleSignIn.signOut();
-                  print("Result ${result}");
+                  final googleSignIn = GoogleSignIn();
+                  var result = await googleSignIn.signOut();
                 } catch (e) {
-                  print(e);
                   //    }
                 }
               },
@@ -96,7 +92,7 @@ class AuthScreen extends ConsumerWidget {
           ElevatedButton(
               style: const ButtonStyle(),
               onPressed: () async {
-                await _localdb
+                await localdb
                     .getAllUsers()
                     .then((value) => print(value[0].displayName));
                 //   googleLogin() async {

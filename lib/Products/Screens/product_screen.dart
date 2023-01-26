@@ -1,35 +1,66 @@
-import 'package:ecommerce_app/Controllers/Services/IsarServices/isar_service.dart';
+import 'package:ecommerce_app/Cart/Screens/cart_screen.dart';
+import 'package:ecommerce_app/Products/Controllers/product_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../Controllers/Providers/providers.dart';
-
-class ProductScreen extends ConsumerWidget {
-  const ProductScreen({super.key});
+class ProductScreen extends ConsumerStatefulWidget {
+  const ProductScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final _localdb = ref.read(isarProvider);
-    final _userdb = ref.read(userProvider);
+  ProductScreenState createState() => ProductScreenState();
+}
 
-    // print('_LOCALDB: ${_localdb.getAllUsers()}');
+class ProductScreenState extends ConsumerState<ProductScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final productRepo = ref.watch(fetchProductsProvider);
+    final productController = ref.watch(productControllerProvider);
+
     return Scaffold(
-        appBar: AppBar(
-          actions: [
-            // CircleAvatar(
-            //   backgroundImage: NetworkImage(_localdb.getAllUsers()),
-            // )
-          ],
-        ),
-        body: _userdb.when(
-            loading: () => const Center(
-                  child: Text("Loading"),
+      floatingActionButton: FloatingActionButton(
+        child: Text(productController.cartList.length.toString()),
+        onPressed: () {
+          productController.incrementCounter();
+        },
+      ),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CartScreen(),
+                )),
+            icon: const Icon(Icons.shopping_cart),
+          )
+        ],
+      ),
+      body: productRepo.when(
+        loading: () {
+          return const Center(
+            child: Text("Loading"),
+          );
+        },
+        error: (error, stackTrace) => Text(error.toString()),
+        data: (data) {
+          return ListView.builder(
+            itemCount: data.length,
+            itemBuilder: (context, index) => InkWell(
+              onTap: () {
+                productController.addTocart(data[index]);
+              },
+              child: ListTile(
+                trailing: Text(
+                  data[index].price.toString(),
                 ),
-            error: (error, stackTrace) => Text(error.toString()),
-            data: (data) => Center(
-                  child: Text(data[0].displayName),
-                )));
+                title: Text(
+                  data[index].title.toString(),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

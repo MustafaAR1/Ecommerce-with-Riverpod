@@ -1,5 +1,6 @@
-import 'package:ecommerce_app/Data/Local/Models/user_local_model.dart';
 import 'package:isar/isar.dart';
+
+import '../../../Data/Local/Models/User/user_local_model.dart';
 
 class IsarService {
   late Future<Isar> db;
