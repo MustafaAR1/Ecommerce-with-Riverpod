@@ -41,6 +41,8 @@ class ProductController extends ChangeNotifier {
   Future<List<ProductModel>> get fetchProducts =>
       _productRepository.fetchProducts();
 
+  ProductRepository get productRepository => _productRepository;
+
   ProductController(this._productRepository);
 
   void incrementCounter() {

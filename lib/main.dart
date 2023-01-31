@@ -1,4 +1,5 @@
 import 'package:ecommerce_app/Auth/Screens/auth.dart';
+import 'package:ecommerce_app/Products/Screens/product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,7 +15,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Flutter Demo',
-        theme: ThemeData(primarySwatch: Colors.indigo),
-        home: const AuthScreen());
+        theme: ThemeData(
+          // useMaterial3: true,
+          colorSchemeSeed: Color.fromARGB(255, 116, 255, 255),
+        ),
+        home: const ProductScreen());
   }
 }
